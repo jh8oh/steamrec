@@ -7,6 +7,8 @@ import passport from "passport";
 import { config as dotenvConfig } from "dotenv";
 import "./src/services/passport.js";
 
+import authRouter from "./src/routes/auth-route.js";
+
 dotenvConfig();
 
 const app = express();
@@ -27,6 +29,9 @@ app
   )
   .use(passport.initialize())
   .use(passport.session());
+
+// Routes
+app.use(authRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Listening on ${process.env.PORT}`);

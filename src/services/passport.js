@@ -1,5 +1,8 @@
 import { Strategy as SteamStrategy } from "passport-steam";
+import { config as dotenvConfig } from "dotenv";
 import passport from "passport";
+
+dotenvConfig();
 
 passport.use(
   new SteamStrategy(
