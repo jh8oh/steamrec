@@ -4,8 +4,6 @@ import passport from "passport";
 const router = express.Router();
 
 router.get("/auth/check", (req, res) => {
-  console.log("User:" + req.user);
-  console.log(req.session.passport);
   if (req.user === undefined) {
     res.json({});
   } else {
@@ -29,8 +27,10 @@ router.get(
 );
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
 });
 
 export default router;
