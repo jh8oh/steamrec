@@ -9,7 +9,8 @@ import { dirname } from "path";
 import { config as dotenvConfig } from "dotenv";
 import "./src/services/passport.js";
 
-import authRouter from "./src/routes/auth-route.js";
+import authRoutes from "./src/routes/auth-route.js";
+import steamRoutes from "./src/routes/steam-route.js";
 
 dotenvConfig();
 
@@ -35,7 +36,8 @@ app
   .use(passport.session());
 
 // Routes
-app.use(authRouter);
+app.use(authRoutes);
+app.use(steamRoutes);
 
 // Serve view
 app.get("/", (res, req) => {

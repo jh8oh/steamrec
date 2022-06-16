@@ -3,6 +3,7 @@ import passport from "passport";
 
 const router = express.Router();
 
+// Check if user is logged in
 router.get("/auth/check", (req, res) => {
   if (req.user === undefined) {
     res.json({});
@@ -13,11 +14,13 @@ router.get("/auth/check", (req, res) => {
   }
 });
 
+// Redirect to Steam OpenID
 router.get(
   "/auth/redirect",
   passport.authenticate("steam", { failureRedirect: "/" })
 );
 
+// Return from Steam OpenID
 router.get(
   "/auth/return",
   passport.authenticate("steam", { failureRedirect: "/" }),
@@ -26,6 +29,7 @@ router.get(
   }
 );
 
+// Log out
 router.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) return next(err);
