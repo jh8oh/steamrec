@@ -23,13 +23,13 @@ router.get("/api/owned-games", (req, res) => {
   });
 
   axios.get(url + query).then((response) => {
-    console.log(response.data);
     const filteredData = response.data.response.games.map(
-      ({ appid, playtime_forever }) => ({
-        appid: appid,
-        playtime_minutes: playtime_forever,
+      ({ appid, name, playtime_forever }) => ({
+        id: appid,
+        name: name,
+        playtime: playtime_forever,
       })
-    );
+    );;
 
     res.json(filteredData);
   });
