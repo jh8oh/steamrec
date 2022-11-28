@@ -11,6 +11,7 @@ import "./src/services/passport.js";
 
 import authRoutes from "./src/routes/auth-route.js";
 import steamRoutes from "./src/routes/steam-route.js";
+import dataRoutes from "./src/routes/data-route.js";
 
 dotenvConfig();
 
@@ -38,6 +39,7 @@ app
 // Routes
 app.use(authRoutes);
 app.use(steamRoutes);
+app.use(dataRoutes);
 
 // Serve view
 app.get("/", (res, req) => {
