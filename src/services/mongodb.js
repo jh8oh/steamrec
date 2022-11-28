@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-var db = null;
+let db = null;
 
 export async function connectMongoClient() {
   MongoClient.connect(process.env.MONGODB_URI)
