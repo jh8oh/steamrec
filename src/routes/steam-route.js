@@ -24,10 +24,11 @@ router.get("/api/owned-games", (req, res) => {
 
   axios.get(url + query).then((response) => {
     const filteredData = response.data.response.games.map(
-      ({ appid, name, playtime_forever }) => ({
+      ({ appid, name, playtime_forever, rtime_last_played }) => ({
         id: appid,
         name: name,
         playtime: playtime_forever,
+        last_played: rtime_last_played
       })
     );;
 
