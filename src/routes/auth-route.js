@@ -32,7 +32,7 @@ router.get(
 // Log out
 router.get("/logout", (req, res) => {
   req.logout((err) => {
-    if (err) return next(err);
+    if (err) console.log(err);
     res.redirect("/");
   });
 });
