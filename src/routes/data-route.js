@@ -1,5 +1,5 @@
 import express from "express";
-import { MongoClient } from "mongodb";
+import { getDatabase } from "../services/mongodb";
 
 const router = express.Router();
 
@@ -9,21 +9,14 @@ router.get("/data/ratings", (req, res) => {
     return;
   }
 
-  MongoClient.connect(process.env.MONGODB_URI)
-    .then((client) => {
-      client
-        .db("steamrec")
-        .collection("users")
-        .find(
-          { userId: req.user.id },
-          { projection: { _id: 0, gameId: 1, rating: 1 } }
-        )
-        .toArray()
-        .then((array) => res.json(array))
-        .finally(() => {
-          client.close();
-        });
-    })
+  getDatabase()
+    .collection("users")
+    .find(
+      { userId: req.user.id },
+      { projection: { _id: 0, gameId: 1, rating: 1 } }
+    )
+    .toArray()
+    .then((array) => res.json(array))
     .catch((err) => console.log(err));
 });
 
