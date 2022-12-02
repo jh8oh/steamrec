@@ -11,7 +11,7 @@ router.get("/data/ratings", (req, res) => {
 
   getDatabase()
     .then((db) => {
-      db.collection("users")
+      db.collection("ratings")
         .find(
           { userId: req.user.id },
           { projection: { _id: 0, gameId: 1, rating: 1 } }
@@ -30,7 +30,7 @@ router.post("/data/ratings/rate", (req, res) => {
 
   getDatabase()
     .then((db) => {
-      db.collection("users").updateOne(
+      db.collection("ratings").updateOne(
         { userId: req.user.id, gameId: req.body.gameId },
         { $set: { rating: req.body.rating } },
         { upsert: true }
