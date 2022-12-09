@@ -1,21 +1,33 @@
 import { MongoClient } from "mongodb";
 
-let db = null;
+let client = null;
 
 export async function connectMongoClient() {
-  MongoClient.connect(process.env.MONGODB_URI)
-    .then((client) => {
-      db = client.db("steamrec");
+  await MongoClient.connect(process.env.MONGODB_URI)
+    .then((c) => {
+      client = c;
+
+      process.on("SIGINT", () => {
+        disconnectMongoClient();
+        process.exit(0);
+      });
     })
     .catch((err) => {
       console.log("Could not connect to the database", err);
-      process.exit();
+      process.exit(1);
     });
 }
 
-export async function getDatabase() {
-  if (db == null) {
-    await connectMongoClient()
+export function disconnectMongoClient() {
+  if (client != null) {
+    client.close();
+    client = null;
   }
-  return db;
+}
+
+export async function getDatabase() {
+  if (client == null) {
+    await connectMongoClient();
+  }
+  return client.db("steamrec");
 }
