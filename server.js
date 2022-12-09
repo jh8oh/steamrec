@@ -11,7 +11,7 @@ import "./src/services/passport.js";
 
 import authRoutes from "./src/routes/auth-route.js";
 import steamRoutes from "./src/routes/steam-route.js";
-import dataRoutes from "./src/routes/data-route.js";
+import ratingRoutes from "./src/routes/rating-route.js";
 import { connectMongoClient } from "./src/services/mongodb.js";
 
 dotenvConfig();
@@ -43,10 +43,10 @@ connectMongoClient();
 // Routes
 app.use(authRoutes);
 app.use(steamRoutes);
-app.use(dataRoutes);
+app.use(ratingRoutes);
 
 // Serve view
-app.get("/", (res, req) => {
+app.get("/", (res) => {
   res.sendFile(viewPath + "index.html");
 });
 
