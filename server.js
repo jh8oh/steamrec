@@ -12,6 +12,7 @@ import "./src/services/passport.js";
 import authRoutes from "./src/routes/auth-route.js";
 import steamRoutes from "./src/routes/steam-route.js";
 import ratingRoutes from "./src/routes/rating-route.js";
+import recommendRoutes from "./src/routes/recommend-route.js";
 
 dotenvConfig();
 
@@ -40,6 +41,7 @@ app
 app.use(authRoutes);
 app.use(steamRoutes);
 app.use(ratingRoutes);
+app.use(recommendRoutes);
 
 // Serve view
 app.get("/", (res) => {
