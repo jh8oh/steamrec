@@ -13,7 +13,7 @@ router.post("/data/recommend", (req, res) => {
 
   getDatabase().then(async (db) => {
     let ownedGames = await db
-      .collection("games")
+      .collection("apps")
       .find({ _id: { $in: req.body.ownedGames.map((it) => it.id) } })
       .toArray()
       .then((array) => {
