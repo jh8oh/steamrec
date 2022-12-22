@@ -1,5 +1,5 @@
 // Public functions
-export async function getRatings(ownedGames) {
+export async function getRatings(ratedGames) {
   let developerRatings = [];
   let publisherRatings = [];
   let tagRatings = [];
@@ -7,7 +7,7 @@ export async function getRatings(ownedGames) {
   let categoryRatings = [];
 
   // Loop through each games and populate ratings array with {id, rating, count} objects
-  ownedGames.forEach((game) => {
+  ratedGames.forEach((game) => {
     // Developer Ratings
     game.developers?.forEach((developer) => {
       addToRatingsArray(developerRatings, developer, game.rating);
@@ -49,24 +49,18 @@ function addToRatingsArray(ratingsArray, obj, rating) {
   let i = ratingsArray.findIndex((it) => it.name == obj);
   if (i > -1) {
     ratingsArray[i].rating += getRatingDiff(rating);
-    ratingsArray[i].count++;
   } else {
     ratingsArray.push({
       name: obj,
       rating: getRatingDiff(rating),
-      count: 1,
     });
   }
 }
 
 function reformat(ratingsArray) {
   ratingsArray
-    .map((obj) => ({
-      name: obj.name,
-      ratingPercent: obj.rating / obj.count,
-    }))
-    .filter((it) => it.ratingPercent != 0)
-    .sort((a, b) => b.ratingPercent - a.ratingPercent);
+    .filter((it) => it.rating != 0)
+    .sort((a, b) => b.rating - a.rating);
 }
 
 function getRatingDiff(rating) {

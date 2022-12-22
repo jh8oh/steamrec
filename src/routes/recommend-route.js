@@ -12,18 +12,18 @@ router.post("/data/recommend", (req, res) => {
   }
 
   getDatabase().then(async (db) => {
-    let ownedGames = await db
+    let ratedGames = await db
       .collection("apps")
-      .find({ _id: { $in: req.body.ownedGames.map((it) => it.id) } })
+      .find({ _id: { $in: req.body.ratedGames.map((it) => it.id) } })
       .toArray()
       .then((array) => {
-        return req.body.ownedGames.map((itm1) => ({
+        return req.body.ratedGames.map((itm1) => ({
           ...array.find((itm2) => itm1.id == itm2._id),
           ...itm1,
         }));
       });
 
-    let ratings = await getRatings(ownedGames);
+    let ratings = await getRatings(ratedGames);
     let recommended = await getRecommended(ratings);
 
     res.json({
