@@ -12,19 +12,29 @@ router.post("/data/recommend", (req, res) => {
   }
 
   getDatabase().then(async (db) => {
-    let ratedGames = await db
+    const ratedGames = await db
       .collection("apps")
-      .find({ _id: { $in: req.body.ratedGames.map((it) => it.id) } })
+      .find({
+        _id: {
+          $in: req.body.ownedGames
+            .filter((it) => it.rating != 0)
+            .map((it) => it.id),
+        },
+      })
       .toArray()
       .then((array) => {
-        return req.body.ratedGames.map((itm1) => ({
+        return req.body.ownedGames.map((itm1) => ({
           ...array.find((itm2) => itm1.id == itm2._id),
           ...itm1,
         }));
       });
 
-    let ratings = await getRatings(ratedGames);
-    let recommended = await getRecommended(ratings);
+    const ratings = await getRatings(ratedGames);
+    const recommended = await getRecommended(
+      ratings,
+      req.body.filter,
+      req.body.ownedGames.map((it) => it.id)
+    );
 
     res.json({
       ratings: ratings,

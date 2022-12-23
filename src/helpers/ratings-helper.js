@@ -46,7 +46,7 @@ export async function getRatings(ratedGames) {
 // Private functions
 
 function addToRatingsArray(ratingsArray, obj, rating) {
-  let i = ratingsArray.findIndex((it) => it.name == obj);
+  const i = ratingsArray.findIndex((it) => it.name == obj);
   if (i > -1) {
     ratingsArray[i].rating += getRatingDiff(rating);
   } else {
@@ -58,7 +58,9 @@ function addToRatingsArray(ratingsArray, obj, rating) {
 }
 
 function reformat(ratingsArray) {
-  ratingsArray
+  if (ratingsArray.length == 0) return;
+
+  return ratingsArray
     .filter((it) => it.rating != 0)
     .sort((a, b) => b.rating - a.rating);
 }
