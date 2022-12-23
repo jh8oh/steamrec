@@ -42,4 +42,12 @@ router.post("/data/recommend", (req, res) => {
   });
 });
 
+router.get("/data/recommend/more", (req, res) => {
+  res.json(recommendationsHelper.getRecommendations());
+});
+
+router.post("/data/recommend/update", (req, res) => {
+  res.json(recommendationsHelper.getRecommendations(req.body.filter, true));
+});
+
 export default router;

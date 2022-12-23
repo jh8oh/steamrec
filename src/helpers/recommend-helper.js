@@ -2,6 +2,8 @@ import { getDatabase } from "../services/mongodb.js";
 
 export default class RecommendationsHelper {
   #recommendationsFull = [];
+  #filter = {};
+  #count = 0;
   #ratings = {};
 
   constructor(ratings) {
@@ -9,19 +11,22 @@ export default class RecommendationsHelper {
   }
 
   // Getters & Setters
-  getRecommendations(filters) {
+  getRecommendations(filter = null, isUpdateFilter = false) {
+    if (filter) this.#filter = filter;
+
     const filteredRecommendations = this.#recommendationsFull
-      .filter((it) => this.matchFilter(it, filters))
+      .filter((it) => this.matchFilter(it, this.#filter))
       .map((it) => ({
         id: it._id,
         name: it.name,
       }));
-    const popped = filteredRecommendations.splice(0, 24);
-    this.#recommendationsFull = this.#recommendationsFull.filter(
-      (it) => !popped.map((pop) => pop._id).includes(it._id)
-    );
 
-    return popped;
+    if (!isUpdateFilter) {
+      this.#count += 24;
+    }
+    const spliced = filteredRecommendations.splice(0, this.#count);
+
+    return spliced;
   }
 
   // Public methods
