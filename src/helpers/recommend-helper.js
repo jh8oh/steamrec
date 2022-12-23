@@ -27,41 +27,11 @@ export default class RecommendationsHelper {
   // Public methods
 
   async setRecommendations(notRecommendedIds) {
-    const positivelyRatedNames = this.#ratings.developerRatings
-      .concat(this.#ratings.publisherRatings)
-      .concat(this.#ratings.tagRatings)
-      .concat(this.#ratings.genreRatings)
-      .concat(this.#ratings.categoryRatings)
-      .filter((it) => it.rating > 0)
-      .map((it) => it.name)
-      .join(" ");
-
     await getDatabase().then(async (db) => {
-      await db
+      this.#recommendationsFull = await db
         .collection("apps")
-        .find(
-          {
-            _id: { $nin: notRecommendedIds },
-            $text: { $search: positivelyRatedNames },
-          },
-          {
-            score: { $meta: "textScore" },
-            projection: {
-              name: 1,
-              type: 1,
-              release_date: 1,
-              recommendations: 1,
-              metacritic: 1,
-              adult: 1,
-            },
-          }
-        )
-        .sort({ score: { $meta: "textScore" } })
-        .limit(1000)
-        .toArray()
-        .then((array) => {
-          this.#recommendationsFull = array;
-        });
+        .aggregate(this.generatePipeline(notRecommendedIds))
+        .toArray();
     });
   }
 
@@ -84,5 +54,72 @@ export default class RecommendationsHelper {
     if (recommendation.adult != filters.adult) return false;
 
     return true;
+  }
+
+  generatePipeline(notRecommendedIds) {
+    let basePipeline = [
+      {
+        $search: {
+          index: "RecommendSearchIndex",
+          compound: {
+            should: [],
+          },
+          returnStoredSource: true,
+        },
+      },
+      {
+        $match: {
+          _id: { $nin: notRecommendedIds },
+        },
+      },
+      {
+        $limit: 1000,
+      },
+    ];
+
+    basePipeline[0].$search.compound.should = [
+      ...this.returnCompoundSearch(
+        this.#ratings.developerRatings,
+        "developers",
+        3
+      ),
+      ...this.returnCompoundSearch(
+        this.#ratings.publisherRatings,
+        "publishers",
+        3
+      ),
+      ...this.returnCompoundSearch(this.#ratings.tagRatings, "tags", 4),
+      ...this.returnCompoundSearch(this.#ratings.genreRatings, "genres", 2),
+      ...this.returnCompoundSearch(
+        this.#ratings.categoryRatings,
+        "categories",
+        1
+      ),
+    ];
+
+    return basePipeline;
+  }
+
+  returnCompoundSearch(ratings, path, boostConstant) {
+    let should = [];
+    const maxRating = ratings
+      .map((it) => it.rating)
+      .reduce((max, value) => Math.max(max, value));
+    const normalizedRatings = ratings.map((it) => ({
+      name: it.name,
+      rating: boostConstant + it.rating / maxRating,
+    }));
+
+    normalizedRatings.forEach((r) => {
+      should.push({
+        text: {
+          path: path,
+          query: r.name,
+          score: { boost: { value: r.rating } },
+        },
+      });
+    });
+
+    return should;
   }
 }
