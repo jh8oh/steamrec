@@ -1,9 +1,11 @@
 import express from "express";
 import { getDatabase } from "../services/mongodb.js";
 import { getRatings } from "../helpers/ratings-helper.js";
-import { getRecommended } from "../helpers/recommend-helper.js";
+import RecommendationsHelper from "../helpers/recommend-helper.js";
 
 const router = express.Router();
+
+let recommendationsHelper = new RecommendationsHelper();
 
 router.post("/data/recommend", (req, res) => {
   if (req.user === undefined) {
@@ -12,7 +14,8 @@ router.post("/data/recommend", (req, res) => {
   }
 
   getDatabase().then(async (db) => {
-    const ratedGames = await db
+    let ratedGames = [];
+    ratedGames = await db
       .collection("apps")
       .find({
         _id: {
@@ -30,16 +33,12 @@ router.post("/data/recommend", (req, res) => {
       });
 
     const ratings = await getRatings(ratedGames);
-    const recommended = await getRecommended(
-      ratings,
-      req.body.filter,
+    recommendationsHelper = new RecommendationsHelper(ratings);
+    await recommendationsHelper.setRecommendations(
       req.body.ownedGames.map((it) => it.id)
     );
 
-    res.json({
-      ratings: ratings,
-      recommended: recommended,
-    });
+    res.json(recommendationsHelper.getRecommendations(req.body.filter));
   });
 });
 
