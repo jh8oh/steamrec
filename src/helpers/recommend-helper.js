@@ -43,20 +43,36 @@ export default class RecommendationsHelper {
   // Private function
 
   matchFilter(recommendation, filters) {
-    if (!filters.type.includes(recommendation.type)) return false;
-    if (recommendation.release_date.coming_soon == filters.released)
+    if (!filters.type.includes(recommendation.type)) {
       return false;
+    }
+    if (recommendation.release_date.coming_soon == filters.released) {
+      return false;
+    }
+    if (
+      recommendation.recommendations == null &&
+      !filters.recommendations.acceptNull
+    ) {
+      return false;
+    }
     if (
       recommendation.recommendations != null &&
-      recommendation.recommendations < filters.recommendation
-    )
+      recommendation.recommendations < filters.recommendations.value
+    ) {
       return false;
+    }
+    if (recommendation.metacritic == null && !filters.metacritic.acceptNull) {
+      return false;
+    }
     if (
       recommendation.metacritic != null &&
-      recommendation.metacritic < filters.metacritic
-    )
+      recommendation.metacritic < filters.metacritic.value
+    ) {
       return false;
-    if (recommendation.adult != filters.adult) return false;
+    }
+    if (recommendation.adult != filters.adult) {
+      return false;
+    }
 
     return true;
   }
