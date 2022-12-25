@@ -39,4 +39,23 @@ router.post("/data/ratings/rate", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+router.delete("/data/ratings", (req, res) => {
+  if (req.user === undefined) {
+    res.redirect("/");
+    return;
+  }
+
+  getDatabase().then((db) => {
+    db.collection("ratings")
+      .deleteMany({ userId: req.user.id })
+      .then(() => {
+        res.status(200).send("ok");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send("not ok");
+      });
+  });
+});
+
 export default router;
