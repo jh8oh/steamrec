@@ -13,32 +13,20 @@ export function initPassport() {
         returnURL: `${process.env.CYCLIC_URL}/auth/return`,
         apiKey: process.env.API_KEY,
       },
-      async (identifier, profile, done) => {
-        return getDatabase()
-          .collection("users")
-          .updateOne(
-            { _id: parseInt(profile.id) },
-            {
-              $set: {
-                _id: parseInt(profile.id),
-                displayName: profile.displayName,
-              },
-            },
-            { upsert: true }
-          )
-          .then(() => done(null, profile));
+      (identifier, profile, done) => {
+        process.nextTick(() => {
+          profile.identifier = identifier;
+          return done(null, profile);
+        });
       }
     )
   );
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
+  passport.serializeUser(function (user, done) {
+    done(null, user);
   });
 
-  passport.deserializeUser((id, done) => {
-    getDatabase()
-      .collection("users")
-      .findOne({ _id: id })
-      .then((it) => done(null, it));
+  passport.deserializeUser(function (obj, done) {
+    done(null, obj);
   });
 }
