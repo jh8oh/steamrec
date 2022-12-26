@@ -1,9 +1,10 @@
 import express from "express";
+import { ensureAuthenticated } from "./auth-route.js";
 import { getDatabase } from "../services/mongodb.js";
 
 const router = express.Router();
 
-router.get("/data/ratings", (req, res) => {
+router.get("/data/ratings", ensureAuthenticated, (req, res) => {
   if (req.user === undefined) {
     res.redirect("/");
     return;
@@ -22,7 +23,7 @@ router.get("/data/ratings", (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.post("/data/ratings/rate", (req, res) => {
+router.post("/data/ratings/rate", ensureAuthenticated, (req, res) => {
   if (req.user === undefined) {
     res.redirect("/");
     return;
@@ -39,7 +40,7 @@ router.post("/data/ratings/rate", (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.delete("/data/ratings", (req, res) => {
+router.delete("/data/ratings", ensureAuthenticated, (req, res) => {
   if (req.user === undefined) {
     res.redirect("/");
     return;

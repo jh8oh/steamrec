@@ -5,14 +5,15 @@ const router = express.Router();
 
 // Check if user is logged in
 router.get("/auth/check", (req, res) => {
-  if (req.user === undefined) {
-    res.json({});
-  } else {
-    res.json({
-      user: req.user,
-    });
-  }
+  res.json({ isLoggedIn: req.isAuthenticated() });
 });
+
+export function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+}
 
 // Redirect to Steam OpenID
 router.get(

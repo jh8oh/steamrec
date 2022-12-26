@@ -1,4 +1,5 @@
 import express from "express";
+import { ensureAuthenticated } from "./auth-route.js";
 import { getDatabase } from "../services/mongodb.js";
 import { getRatings } from "../helpers/ratings-helper.js";
 import RecommendationsHelper from "../helpers/recommend-helper.js";
@@ -7,7 +8,7 @@ const router = express.Router();
 
 let recommendationsHelper = new RecommendationsHelper();
 
-router.post("/data/recommend", (req, res) => {
+router.post("/data/recommend", ensureAuthenticated, (req, res) => {
   if (req.user === undefined) {
     res.redirect("/");
     return;
@@ -42,11 +43,11 @@ router.post("/data/recommend", (req, res) => {
   });
 });
 
-router.get("/data/recommend/more", (req, res) => {
+router.get("/data/recommend/more", ensureAuthenticated, (req, res) => {
   res.json(recommendationsHelper.getRecommendations());
 });
 
-router.post("/data/recommend/update", (req, res) => {
+router.post("/data/recommend/update", ensureAuthenticated, (req, res) => {
   res.json(recommendationsHelper.getRecommendations(req.body.filter, true));
 });
 
