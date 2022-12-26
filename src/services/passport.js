@@ -27,13 +27,13 @@ export function initPassport() {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user);
+    done(null, user.id);
   });
 
-  passport.deserializeUser((user, done) => {
+  passport.deserializeUser((id, done) => {
     getDatabase()
       .collection("users")
-      .findOne({ _id: user.id })
+      .findOne({ _id: id })
       .then((it) => done(null, it));
   });
 }
