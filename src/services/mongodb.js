@@ -8,10 +8,7 @@ export async function connectMongoClient() {
       client = c;
 
       process.on("SIGINT", () => {
-        if (client != null) {
-          client.close();
-          client = null;
-        }
+        disconnectMongoClient();
         process.exit(0);
       });
     })
@@ -21,9 +18,13 @@ export async function connectMongoClient() {
     });
 }
 
-export async function getDatabase() {
-  if (client == null) {
-    await connectMongoClient();
+export function disconnectMongoClient() {
+  if (client != null) {
+    client.close();
+    client = null;
   }
+}
+
+export function getDatabase() {
   return client.db("steamrec");
 }

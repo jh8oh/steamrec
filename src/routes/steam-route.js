@@ -5,7 +5,6 @@ import { ensureAuthenticated } from "./auth-route.js";
 
 const router = express.Router();
 const STEAM_API_URL = "https://api.steampowered.com";
-const STEAM_STORE_URL = "https://store.steampowered.com/";
 
 // Get all user owned games
 router.get("/api/owned-games", ensureAuthenticated, (req, res) => {
