@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { config as dotenvConfig } from "dotenv";
 import "./src/services/passport.js";
+import { connectMongoClient } from "./src/services/mongodb.js";
 
 import authRoutes from "./src/routes/auth-route.js";
 import steamRoutes from "./src/routes/steam-route.js";
@@ -49,6 +50,15 @@ app.get("/", (res) => {
 });
 
 // Launch
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on ${process.env.PORT}`);
-});
+connectMongoClient()
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Listening on ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    if (err) {
+      console.error(err);
+      return false;
+    }
+  });

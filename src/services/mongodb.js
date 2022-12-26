@@ -8,7 +8,10 @@ export async function connectMongoClient() {
       client = c;
 
       process.on("SIGINT", () => {
-        disconnectMongoClient();
+        if (client != null) {
+          client.close();
+          client = null;
+        }
         process.exit(0);
       });
     })
@@ -16,13 +19,6 @@ export async function connectMongoClient() {
       console.log("Could not connect to the database", err);
       process.exit(1);
     });
-}
-
-export function disconnectMongoClient() {
-  if (client != null) {
-    client.close();
-    client = null;
-  }
 }
 
 export async function getDatabase() {
