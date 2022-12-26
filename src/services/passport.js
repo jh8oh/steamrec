@@ -13,11 +13,20 @@ export function initPassport() {
         returnURL: `${process.env.CYCLIC_URL}/auth/return`,
         apiKey: process.env.API_KEY,
       },
-      (identifier, profile, done) => {
-        process.nextTick(() => {
-          profile.identifier = identifier;
-          return done(null, profile);
-        });
+      async (identifier, profile, done) => {
+        getDatabase()
+          .collection("users")
+          .updateOne(
+            { _id: parseInt(profile.id) },
+            {
+              $set: {
+                _id: parseInt(profile.id),
+                displayName: profile.displayName,
+              },
+            },
+            { upsert: true }
+          )
+          .then(() => done(null, profile));
       }
     )
   );

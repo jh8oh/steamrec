@@ -55,6 +55,22 @@ try {
   initPassport();
 
   // Routes
+
+  // Redirect to Steam OpenID
+  app.get(
+    "/auth/redirect",
+    passport.authenticate("steam", { failureRedirect: "/" })
+  );
+
+  // Return from Steam OpenID
+  app.get(
+    "/auth/return",
+    passport.authenticate("steam", { failureRedirect: "/" }),
+    (req, res) => {
+      res.redirect("/");
+    }
+  );
+
   app.use(authRoutes);
   app.use(steamRoutes);
   app.use(ratingRoutes);
