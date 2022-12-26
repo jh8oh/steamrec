@@ -7,8 +7,8 @@ dotenvConfig();
 passport.use(
   new SteamStrategy(
     {
-      realm: process.env.BASE_URL,
-      returnURL: `${process.env.BASE_URL}/auth/return`,
+      realm: process.env.CYCLIC_URL,
+      returnURL: `${process.env.CYCLIC_URL}/auth/return`,
       apiKey: process.env.API_KEY,
     },
     (identifier, profile, done) => {

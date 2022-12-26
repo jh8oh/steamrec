@@ -19,7 +19,7 @@ dotenvConfig();
 const app = express();
 const viewPath = dirname(fileURLToPath(import.meta.url)) + "/src/view/";
 const corsOptions = {
-  origin: process.env.BASE_URL,
+  origin: process.env.CYCLIC_URL,
 };
 
 app
