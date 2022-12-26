@@ -32,12 +32,10 @@ export default class RecommendationsHelper {
   // Public methods
 
   async setRecommendations(notRecommendedIds) {
-    await getDatabase().then(async (db) => {
-      this.#recommendationsFull = await db
-        .collection("apps")
-        .aggregate(this.generatePipeline(notRecommendedIds))
-        .toArray();
-    });
+    this.#recommendationsFull = await getDatabase()
+      .collection("apps")
+      .aggregate(this.generatePipeline(notRecommendedIds))
+      .toArray();
   }
 
   // Private function

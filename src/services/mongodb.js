@@ -25,9 +25,6 @@ export function disconnectMongoClient() {
   }
 }
 
-export async function getDatabase() {
-  if (client == null) {
-    await connectMongoClient();
-  }
+export function getDatabase() {
   return client.db("steamrec");
 }
