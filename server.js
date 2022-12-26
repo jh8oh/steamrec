@@ -11,6 +11,7 @@ import {
   connectMongoClient,
   disconnectMongoClient,
 } from "./src/services/mongodb.js";
+import { CyclicSessionStore } from "@cyclic.sh/session-store";
 
 import authRoutes from "./src/routes/auth-route.js";
 import steamRoutes from "./src/routes/steam-route.js";
@@ -24,6 +25,11 @@ const app = express();
 const viewPath = dirname(fileURLToPath(import.meta.url)) + "/src/view/";
 const corsOptions = {
   origin: process.env.CYCLIC_URL,
+};
+const cyclicStoreOptions = {
+  table: {
+    name: process.env.CYCLIC_DB,
+  },
 };
 
 try {
@@ -39,6 +45,7 @@ try {
         secret: process.env.SESSION_SECRET,
         resave: true,
         saveUninitialized: true,
+        store: new CyclicSessionStore(cyclicStoreOptions),
       })
     )
     .use(passport.initialize())
