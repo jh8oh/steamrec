@@ -14,7 +14,7 @@ export function initPassport() {
         apiKey: process.env.API_KEY,
       },
       async (identifier, profile, done) => {
-        return getDatabase()
+        getDatabase()
           .collection("users")
           .updateOne(
             { _id: parseInt(profile.id) },
