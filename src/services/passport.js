@@ -18,7 +18,7 @@ export function initPassport() {
           .collection("users")
           .updateOne(
             { _id: profile.id },
-            { _id: profile.id, displayName: profile.displayName },
+            { $set: { _id: profile.id, displayName: profile.displayName } },
             { upsert: true }
           )
           .then(() => done(null, profile));
