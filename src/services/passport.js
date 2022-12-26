@@ -1,7 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import passport from "passport";
 import { Strategy as SteamStrategy } from "passport-steam";
-import { getDatabase } from "./mongodb.js";
 
 dotenvConfig();
 
@@ -14,26 +13,17 @@ export function initPassport() {
         apiKey: process.env.API_KEY,
       },
       async (identifier, profile, done) => {
-        const user = {
-          _id: profile.id,
-          displayName: profile.displayName,
-        };
-        await getDatabase()
-          .collection("users")
-          .updateOne({ _id: user._id }, { $set: user }, { upsert: true })
-          .then(() => done(null, user));
+        const user = { id: profile.id, displayName: profile.displayName };
+        return done(null, user);
       }
     )
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user._id);
+    done(null, user);
   });
 
-  passport.deserializeUser(async (id, done) => {
-    await getDatabase()
-      .collection("users")
-      .findOne({ _id: id })
-      .then((it) => done(null, it));
+  passport.deserializeUser((obj, done) => {
+    done(null, obj);
   });
 }

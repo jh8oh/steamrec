@@ -15,6 +15,21 @@ export function ensureAuthenticated(req, res, next) {
   res.redirect("/");
 }
 
+// Redirect to Steam OpenID
+router.get(
+  "/auth/redirect",
+  passport.authenticate("steam", { failureRedirect: "/" })
+);
+
+// Return from Steam OpenID
+router.get(
+  "/auth/return",
+  passport.authenticate("steam", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
 // Log out
 router.get("/logout", (req, res) => {
   req.logout((err) => {
