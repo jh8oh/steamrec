@@ -18,7 +18,12 @@ export function initPassport() {
           .collection("users")
           .updateOne(
             { _id: parseInt(profile.id) },
-            { $set: { _id: parseInt(profile.id), displayName: profile.displayName } },
+            {
+              $set: {
+                _id: parseInt(profile.id),
+                displayName: profile.displayName,
+              },
+            },
             { upsert: true }
           )
           .then(() => done(null, profile));
@@ -27,13 +32,13 @@ export function initPassport() {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user);
+    done(null, user.id);
   });
 
-  passport.deserializeUser((user, done) => {
+  passport.deserializeUser((id, done) => {
     getDatabase()
       .collection("users")
-      .findOne({ _id: user._id })
+      .findOne({ _id: id })
       .then((it) => done(null, it));
   });
 }
