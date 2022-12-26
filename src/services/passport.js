@@ -13,8 +13,8 @@ export function initPassport() {
         returnURL: `${process.env.CYCLIC_URL}/auth/return`,
         apiKey: process.env.API_KEY,
       },
-      (identifier, profile, done) => {
-        getDatabase()
+      async (identifier, profile, done) => {
+        return getDatabase()
           .collection("users")
           .updateOne(
             { _id: parseInt(profile.id) },
