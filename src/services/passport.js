@@ -14,31 +14,17 @@ export function initPassport() {
         apiKey: process.env.API_KEY,
       },
       async (identifier, profile, done) => {
-        return getDatabase()
-          .collection("users")
-          .updateOne(
-            { _id: parseInt(profile.id) },
-            {
-              $set: {
-                _id: parseInt(profile.id),
-                displayName: profile.displayName,
-              },
-            },
-            { upsert: true }
-          )
-          .then(() => done(null, profile));
+        const user = { id: profile.id, displayName: profile.displayName };
+        done(null, user);
       }
     )
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user._id);
+    done(null, user);
   });
 
-  passport.deserializeUser((id, done) => {
-    getDatabase()
-      .collection("users")
-      .findOne({ _id: id })
-      .then((it) => done(null, it));
+  passport.deserializeUser((obj, done) => {
+    done(null, obj);
   });
 }
