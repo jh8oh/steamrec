@@ -6,12 +6,14 @@ A web app that recommends [Steam](https://store.steampowered.com/) apps based on
 
 - MongoDB
 - Express.js
+  - express-session
+  - @cyclic.sh/session-store
+  - passport.js
+    - passport-steam
 - Vue 3
   - Vue class components
   - Vuex
 - Node.js
-- Passport.js
-  - Passport Steam
 
 ## Models
 
